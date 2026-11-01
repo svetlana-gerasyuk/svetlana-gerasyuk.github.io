@@ -1,0 +1,100 @@
+/* Доработки витрины: фильтры, бейдж «Новый», тёмная карточка, палитры, преимущества, движение.
+   Подключается скриптом vitrina-tools/postbuild.mjs после сборки. */
+
+/* фильтры по нишам */
+.filters{display:flex;gap:8px;margin:-12px 0 18px;padding:2px 0 8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:600 14px/1 var(--body);padding:11px 16px;border-radius:999px;background:var(--soft);color:var(--ink-2);transition:background .25s,color .25s,transform .25s}
+.filters button:hover{color:var(--ink);transform:translateY(-1px)}
+.filters button small{font:600 11px/1 var(--body);color:var(--ink-3);transition:color .25s}
+.filters button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.filters button[aria-pressed="true"] small{color:rgba(255,255,255,.55)}
+.colors-note{display:flex;align-items:center;gap:10px;margin:0 0 8px;color:var(--ink-3);font-size:14px}
+.colors-note .swatches{flex:none}
+
+/* раскладка карточек: чередование по видимым, а не по всем */
+#cases .case{transition:opacity .45s ease,transform .45s ease}
+#cases .case.is-hidden{display:none}
+#cases .case.no-line{border-top:0}
+@media (min-width:900px){
+  #cases .case{grid-template-columns:auto 1fr}
+  #cases .case .devices{order:0}
+  #cases .case.flip{grid-template-columns:1fr auto}
+  #cases .case.flip .devices{order:2}
+}
+.more{display:flex;justify-content:center;padding:28px 0 0}
+.more[hidden]{display:none}
+
+/* наведение: браузер приподнимается, телефон выходит вперёд, стрелка уезжает */
+.case .browser{transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s}
+.case .devices .phone{transform:translateY(var(--py,0px));transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.case .browser img{transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.case-text .open span{display:inline-block;transition:transform .3s}
+.case-text .open:hover{text-decoration:none}
+.case-text .open:hover span{transform:translateX(5px)}
+@media (hover:hover){
+  .case:hover .browser{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 46px 70px -36px rgba(20,21,26,.5),0 0 0 1px var(--line)}
+  .case:hover .browser img{transform:scale(1.035)}
+  .case:hover .devices .phone{transform:translate(var(--px,0),calc(var(--py,0px) - 14px)) rotate(2deg)}
+}
+
+/* палитра сайта: три кружка */
+.swatches{display:inline-flex;align-items:center}
+.swatches i{width:16px;height:16px;border-radius:50%;box-shadow:0 0 0 2px var(--paper),inset 0 0 0 1px rgba(0,0,0,.12)}
+.swatches i + i{margin-left:-4px}
+.case-colors{display:flex;align-items:center;gap:10px;margin-top:16px;color:var(--ink-3);font-size:13px}
+
+/* бейдж «Новый» */
+.badge.new{background:var(--accent);color:#fff}
+.badge.new::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;animation:newpulse 1.8s ease-in-out infinite}
+@keyframes newpulse{50%{opacity:.35}}
+
+/* премиальная чёрно-белая карточка (Black & White) */
+#cases .case.noir{position:relative;background:#0B0B0C;color:#F4F4F2;border-radius:28px;padding:30px 20px 34px;margin:12px 0;border-top:0;overflow:hidden;isolation:isolate}
+#cases .case.noir + .case{border-top:0}
+.case.noir::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 70% at 18% 0%,rgba(255,255,255,.10),transparent 70%),radial-gradient(50% 60% at 100% 100%,rgba(255,255,255,.06),transparent 70%)}
+.case.noir::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+@media (min-width:760px){#cases .case.noir{padding:44px 40px}}
+@media (min-width:900px) and (max-width:1180px){#cases .case.noir{gap:36px}.case.noir .browser{width:min(520px,44vw)}}
+.case.noir .case-text .meta{color:rgba(244,244,242,.55)}
+.case.noir .badge.demo{background:rgba(255,255,255,.08);color:rgba(244,244,242,.8)}
+.case.noir .badge.new{background:#F4F4F2;color:#0B0B0C}
+.case.noir .case-text h3{color:#fff;letter-spacing:.01em}
+.case.noir .case-text p{color:rgba(244,244,242,.7)!important}
+.case.noir .case-text .open{color:#fff}
+.case.noir .case-colors{color:rgba(244,244,242,.5)}
+.case.noir .swatches i{box-shadow:0 0 0 2px #0B0B0C,inset 0 0 0 1px rgba(255,255,255,.2)}
+.case.noir .browser{background:#111;box-shadow:0 40px 70px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.12)}
+.case.noir .browser .bar{background:#18181A}
+.case.noir .browser .bar i{background:#2C2C30}
+.case.noir .browser .bar span{color:rgba(244,244,242,.45)}
+.case.noir .devices .phone{box-shadow:0 40px 60px -26px rgba(0,0,0,.9),inset 0 0 0 2px #3A3A3F}
+@media (hover:hover){.case.noir:hover .browser{box-shadow:0 56px 80px -34px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.2)}}
+
+/* преимущества */
+.perks{display:grid;gap:14px;list-style:none;margin:0;padding:0}
+@media (min-width:620px){.perks{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.perks{grid-template-columns:repeat(4,1fr)}}
+.perks li{position:relative;background:var(--paper);border-radius:var(--r);padding:24px 22px 26px;box-shadow:0 0 0 1px var(--line);transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s}
+@media (hover:hover){.perks li:hover{transform:translateY(-4px);box-shadow:0 0 0 1px var(--line),0 24px 40px -28px rgba(20,21,26,.35)}}
+.perks .ico{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--soft);color:var(--accent);margin-bottom:18px}
+.perks .ico svg{width:22px;height:22px}
+.perks h3{font-size:18px;line-height:1.2}
+.perks p{margin:8px 0 0;color:var(--ink-2);font-size:15px}
+
+/* финальный блок: мягкое свечение акцентом */
+.final::before{content:"";position:absolute;width:520px;height:520px;right:-160px;top:-220px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 45%,transparent),transparent);opacity:.55;pointer-events:none}
+.final > *{position:relative}
+
+/* поочерёдное появление */
+.stagger{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0ms)}
+.stagger.in{opacity:1;transform:none}
+
+/* параллакс веера телефонов */
+#fan{transition:transform .2s linear;will-change:transform}
+
+@media (prefers-reduced-motion:reduce){
+  .stagger{opacity:1;transform:none;transition:none}
+  #fan,.case .browser,.case .browser img,.case .devices .phone,.perks li{transition:none!important;transform:none!important}
+  .badge.new::before{animation:none}
+}
